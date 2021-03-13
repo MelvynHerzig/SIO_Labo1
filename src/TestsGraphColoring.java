@@ -2,10 +2,7 @@
 
 // Résolution
 import coloring.GraphColoringWriter;
-import coloring.LF.LargestFirstLeast;
-import coloring.LF.LargestFirstMost;
-import coloring.LF.LargestFirstNewest;
-import coloring.LF.LargestFirstOldest;
+import coloring.lf.last_use.LargestFirstNewest;
 
 // Graph
 import graph.*;
@@ -21,7 +18,7 @@ public class TestsGraphColoring
       {
          String graphPathName = "EX_SERIE1_4_a.txt";
          Graph g = GraphReader.fromFile(graphPathName);
-         LargestFirstMost lfo = new LargestFirstMost();
+         LargestFirstNewest lfo = new LargestFirstNewest();
          GraphColoringWriter.printSolution(lfo.color(g), System.out);
       }
       catch (IOException e)
