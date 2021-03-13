@@ -26,21 +26,20 @@ public class LargestFirstNewest extends ALargestFirst
    @Override
    protected void setPossibleColor(int v)
    {
-
-      for(int i = nbColor-1; i >= 0; --i)
+      for(int i = nbDiffrentColors -1; i >= 0; --i)
       {
          //Si une couleur non adjacent est trouvée
-         if(colors[i] < v)
+         if(adjacentColors[i] < v)
          {
             solution[v-1] = i + 1;
             // Mise à jour nombre de couleurs
-            if( solution[v-1] > nbColor) nbColor = solution[v-1];
+            if( solution[v-1] > nbDiffrentColors) nbDiffrentColors = solution[v-1];
             break;
          }
       }
 
       // Si aucune couleur n'a été trouvée, ajout d'une nouvelle
       if(solution[v-1] == 0)
-         solution[v-1] = ++nbColor;
+         solution[v-1] = ++nbDiffrentColors;
    }
 }

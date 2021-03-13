@@ -1,9 +1,9 @@
 /*
  -----------------------------------------------------------------------------------
  Cours       : Simultation et optimisation (SIO) Labo 1
- Fichier     : ALargestFirst
+ Fichier     : coloring.lf.ALargestFirst.java
  Auteur(s)   : Herzig Melvyn
- Date        : 11.03.2021
+ Date        : 13.03.2021
  -----------------------------------------------------------------------------------
  */
 
@@ -25,32 +25,34 @@ public abstract class ALargestFirst implements IGraphColorer
    /**
     * Buckets pour trier les sommets selon lors degrés
     */
-   protected ArrayList<ArrayList<Integer>> buckets;
+   protected ArrayList<ArrayList<Integer>> bucketsVerticesDegree;
 
    /**
     * Buckets pour trier les couleurs selon leur nombre d'utilisation.
     */
-   protected ArrayList<ArrayList<Integer>> colorsOrderedPerUse;
+   protected ArrayList<ArrayList<Integer>> bucketsColorsUse;
 
    /**
-    * Couleur par sommet
+    * Couleurs par sommet
     */
    protected int[] solution;
 
    /**
     * Tableau résumant le stockage des couleurs
-    * Chaque index correspond à une couleur,
-    * Si le sommet 4 touche les couleurs 1,2 elle alors les index 1 et 2
+    * Chaque index + 1 correspond au numéro des couleurs.
+    * Si le sommet 4 touche les couleurs 1,2 elle alors les index 0 et 1
     * seront à 4.
     */
-   protected int[] colors;
-   /**
-     * Nombre de couleurs utilisées. Définit la limite de colors
-     */
-   protected int nbColor;
+   protected int[] adjacentColors;
 
    /**
-    * Compte pour chaque couleur son nombre d'occurence
+     * Nombre de couleurs utilisées jusqu'a présent.
+    * Définit la limite utilse de colors.
+     */
+   protected int nbDiffrentColors;
+
+   /**
+    * Compte pour chaque couleur son nombre d'occurences
     */
    protected int[] colorsCounter;
 
@@ -59,8 +61,12 @@ public abstract class ALargestFirst implements IGraphColorer
     */
    protected ALargestFirst()
    {
-      buckets = null;
+      bucketsVerticesDegree = null;
+      bucketsColorsUse = null;
       solution = null;
+      adjacentColors = null;
+      nbDiffrentColors = 0;
+      colorsCounter = null;
    }
 
    /**
@@ -71,38 +77,37 @@ public abstract class ALargestFirst implements IGraphColorer
    private void sortGraph(final Graph g)
    {
       // Initialisation des buckets entre 0 et N-1
-      buckets = new ArrayList<>(g.getMaxDegree()+1);
+      bucketsVerticesDegree = new ArrayList<>(g.getMaxDegree()+1);
       for(int i = 0; i < g.getMaxDegree()+1; ++i)
       {
-         buckets.add(new ArrayList<>());
+         bucketsVerticesDegree.add(new ArrayList<>());
       }
 
       // La clé d'un sommet est son degré
       for(int v = 1; v <= g.getNVertices(); ++v)
       {
          int degree = g.getAdjacencyList(v).size();
-         buckets.get(degree).add(v);
+         bucketsVerticesDegree.get(degree).add(v);
       }
    }
 
    /**
-    * Initialise les structure pour la méthode color.
-    * @param g Graphe utilisé dans solve.
+    * Initialise les structures pour la méthode color.
+    * @param g Graphe utilisé.
     */
    private void init(final Graph g)
    {
       solution = new int[g.getNVertices()];
-      colors = new int[g.getMaxDegree()+1];
+      adjacentColors = new int[g.getMaxDegree()+1];
+      colorsCounter = new int[adjacentColors.length];
 
-      // Nombre de couleurs utilisées
-      nbColor = 0;
+      nbDiffrentColors = 0;
 
-      // Compteur d'utilisation des couleurs
-      colorsCounter = new int[colors.length];
-      colorsOrderedPerUse = new ArrayList<>(g.getNVertices());
+      //Il y a entre 0 et N utilisations possibles pour les couleurs.
+      bucketsColorsUse = new ArrayList<>(g.getNVertices());
       for(int i  = 0; i < g.getNVertices(); ++i)
       {
-         colorsOrderedPerUse.add(new ArrayList<>());
+         bucketsColorsUse.add(new ArrayList<>());
       }
    }
 
@@ -117,18 +122,18 @@ public abstract class ALargestFirst implements IGraphColorer
       sortGraph(graph);
 
       // Couleur des sommets adjacents;
-      int color;
+      int adjacentColor;
 
       // Pour chaque bucket (depuis celui des plus grands degrés)
-      for(int b = buckets.size() - 1; b >= 0; --b)
+      for(int b = bucketsVerticesDegree.size() - 1; b >= 0; --b)
       {
          // Pour chaque sommet dans l'ordre lexicographique
-         for(int v : buckets.get(b))
+         for(int v : bucketsVerticesDegree.get(b))
          {
             //Premier sommet, vérifications inutles
-            if(nbColor == 0)
+            if(nbDiffrentColors == 0)
             {
-               solution[v-1] = ++nbColor;
+               solution[v-1] = ++nbDiffrentColors;
                ++colorsCounter[0];
                continue;
             }
@@ -136,20 +141,20 @@ public abstract class ALargestFirst implements IGraphColorer
             for(int adjacentVertex : graph.getAdjacencyList(v))
             {
                //Récupération de la couleurs du voisin.
-               color = solution[adjacentVertex-1];
+               adjacentColor = solution[adjacentVertex-1];
                //Si il a un couleur
-               if(color > 0)
+               if(adjacentColor > 0)
                {
-                  colors[color-1] = v;
+                  adjacentColors[adjacentColor-1] = v;
                }
             }
-            // Cherche et initialise les différente variables en fonction de
+            // Cherche et initialise les différentes variables en fonction de
             // l'agorithme utilisé.
             setPossibleColor(v);
 
          }
       }
-      return new GraphColoring(nbColor, solution);
+      return new GraphColoring(nbDiffrentColors, solution);
    }
 
    /**
