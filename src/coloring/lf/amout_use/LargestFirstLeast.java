@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * @author Herzig Melvyn
  * @date 13/03/2021
  */
-public class LargestFirstLeast extends ALargestFirst
+public class LargestFirstLeast extends ALargestFirstAmount
 {
    /**
     * Recherche et initialise la prochaine couleur pour v.

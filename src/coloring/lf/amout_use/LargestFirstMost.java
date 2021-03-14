@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * @author Herzig Melvyn
  * @date 13/03/2021
  */
-public class LargestFirstMost extends ALargestFirst
+public class LargestFirstMost extends ALargestFirstAmount
 {
 
    /**
