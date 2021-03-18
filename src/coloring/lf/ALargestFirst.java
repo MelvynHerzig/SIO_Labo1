@@ -23,11 +23,6 @@ import java.util.ArrayList;
 public abstract class ALargestFirst implements IGraphColorer
 {
    /**
-    * Buckets pour trier les sommets selon lors degrés
-    */
-   protected ArrayList<ArrayList<Integer>> bucketsVerticesDegree;
-
-   /**
     * Couleurs par sommet
     */
    protected int[] solution;
@@ -42,7 +37,7 @@ public abstract class ALargestFirst implements IGraphColorer
 
    /**
     * Nombre de couleurs utilisées jusqu'a présent.
-    * Définit la limite utilse de colors.
+    * Définit la limite utilsée de adjacentColors.
     */
    protected int nbDiffrentColors;
 
@@ -51,54 +46,22 @@ public abstract class ALargestFirst implements IGraphColorer
     */
    protected ALargestFirst()
    {
-      bucketsVerticesDegree = null;
       solution = null;
       adjacentColors = null;
       nbDiffrentColors = 0;
    }
 
    /**
-    * Trie le graphe g reçu en paramètre par ordre croissant des sommets
-    * et selon l'ordre lexicographique.
-    * @param g Graphe à trier.
-    */
-   private void sortGraph(final Graph g)
-   {
-      // Initialisation des buckets entre 0 et N-1
-      for(int i = 0; i < g.getMaxDegree()+1; ++i)
-      {
-         bucketsVerticesDegree.add(new ArrayList<>());
-      }
-
-      // La clé d'un sommet est son degré
-      for(int v = 1; v <= g.getNVertices(); ++v)
-      {
-         int degree = g.getAdjacencyList(v).size();
-         bucketsVerticesDegree.get(degree).add(v);
-      }
-   }
-
-   /**
-    * Initialise les structures pour la méthode color.
-    * @param g Graphe utilisé.
-    */
-   private void init(final Graph g)
-   {
-      bucketsVerticesDegree = new ArrayList<>(g.getMaxDegree()+1);
-      solution = new int[g.getNVertices()];
-      adjacentColors = new int[g.getMaxDegree()+1];
-      nbDiffrentColors = 0;
-   }
-
-   /**
     * Crée le graphe coloré pour le graphe simple graph.
-    * @param graph Graphe simple à colorer.
+    * L'appel à setPossibleColor n'est pas effectué pour le premier
+    * sommet.
+    * @param g Graphe simple à colorer.
     * @return Retourne un GrapheColoring contenant la solution trouvée.
     */
-   public GraphColoring color(Graph graph)
+   public GraphColoring color(Graph g)
    {
-      init(graph);
-      sortGraph(graph);
+      init(g);
+      ArrayList<ArrayList<Integer>> bucketsVerticesDegree = sortGraph(g);
 
       // Couleur du sommet adjacent;
       int adjacentColor;
@@ -109,8 +72,16 @@ public abstract class ALargestFirst implements IGraphColorer
          // Pour chaque sommet dans l'ordre lexicographique
          for(int v : bucketsVerticesDegree.get(b))
          {
+            //Première itération, on passe la recherche
+            if(nbDiffrentColors == 0)
+            {
+               solution[v-1] = 1;
+               ++nbDiffrentColors;
+               continue;
+            }
+
             // Récupération des couleurs voisines
-            for(int adjacentVertex : graph.getAdjacencyList(v))
+            for(int adjacentVertex : g.getAdjacencyList(v))
             {
                //Récupération de la couleurs du voisin.
                adjacentColor = solution[adjacentVertex-1];
@@ -126,6 +97,42 @@ public abstract class ALargestFirst implements IGraphColorer
          }
       }
       return new GraphColoring(nbDiffrentColors, solution);
+   }
+
+   /**
+    * Trie le graphe g reçu en paramètre par ordre croissant des sommets
+    * et selon l'ordre lexicographique.
+    * @param g Graphe à trier.
+    */
+   private ArrayList<ArrayList<Integer>> sortGraph(Graph g)
+   {
+      ArrayList<ArrayList<Integer>> bucketsVerticesDegree = new ArrayList<>(g.getMaxDegree()+1);
+
+      // Initialisation des buckets entre 0 et N-1
+      for(int i = 0; i < g.getMaxDegree()+1; ++i)
+      {
+         bucketsVerticesDegree.add(new ArrayList<>());
+      }
+
+      // La clé d'un sommet est son degré
+      for(int v = 1; v <= g.getNVertices(); ++v)
+      {
+         int degree = g.getAdjacencyList(v).size();
+         bucketsVerticesDegree.get(degree).add(v);
+      }
+
+      return bucketsVerticesDegree;
+   }
+
+   /**
+    * Initialise les structures pour la méthode color.
+    * @param g Graphe utilisé.
+    */
+   private void init(Graph g)
+   {
+      solution = new int[g.getNVertices()];
+      adjacentColors = new int[g.getMaxDegree()+1];
+      nbDiffrentColors = 0;
    }
 
    /**

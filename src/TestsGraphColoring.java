@@ -20,7 +20,6 @@ import graph.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Classe utilisée pour tester la coloration des graphes.
@@ -28,16 +27,36 @@ import java.util.ArrayList;
 public class TestsGraphColoring
 {
    /**
-    * Lis le graphe dans le fichier donnée et l'affiche dans la sortie standard.
-    * @param file Fichier du graphe.s
+    * Lis le graphe dans le fichier donnée et affiche la coloration
+    * obtenue à partir d'une des variantes de LF.
+    * @param file Fichier du graphe.
     */
-   public static void outputSingle(String file)
+   public static void outputColoringResult(String file)
    {
       try
       {
          Graph g = GraphReader.fromFile(file);
-         LargestFirstMost lfo = new LargestFirstMost();
-         GraphColoringWriter.printSolution(lfo.color(g), System.out);
+
+
+         // Newest version
+//         LargestFirstNewest lfn = new LargestFirstNewest();
+//         System.out.printf("\nNewest\n---------------------------------------------------\n");
+//         GraphColoringWriter.printSolution(lfn.color(g), System.out);
+
+         // Oldest version
+//         LargestFirstOldest lfo = new LargestFirstOldest();
+//         System.out.printf("\nOldest\n---------------------------------------------------\n");
+//         GraphColoringWriter.printSolution(lfo.color(g), System.out);
+
+         // Least version
+//         System.out.printf("\nLeast\n---------------------------------------------------\n");
+//         LargestFirstLeast  lfl = new LargestFirstLeast();
+//         GraphColoringWriter.printSolution(lfl.color(g), System.out);
+
+         // Most version
+         System.out.printf("\nMost\n---------------------------------------------------\n");
+         LargestFirstMost   lfm = new LargestFirstMost();
+         GraphColoringWriter.printSolution(lfm.color(g), System.out);
       }
       catch (IOException e)
       {
@@ -130,6 +149,9 @@ public class TestsGraphColoring
       }
 
       dataBenchmark(args[0]);
+
+      //outputColoringResult("EX_SERIE1_4_a.txt");
+
 
       return;
    }

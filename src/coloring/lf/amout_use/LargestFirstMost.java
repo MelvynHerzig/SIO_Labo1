@@ -1,7 +1,7 @@
 /*
  -----------------------------------------------------------------------------------
  Cours       : Simultation et optimisation (SIO) Labo 1
- Fichier     : LargestFirstMost
+ Fichier     : coloring.lf.amount_use.LargestFirstMost.java
  Auteur(s)   : Herzig Melvyn
  Date        : 13.03.2021
  -----------------------------------------------------------------------------------
@@ -9,7 +9,6 @@
 
 package coloring.lf.amout_use;
 
-import coloring.lf.ALargestFirst;
 import java.util.ArrayList;
 
 /**
@@ -29,38 +28,13 @@ public class LargestFirstMost extends ALargestFirstAmount
    @Override
    protected void setPossibleColor(int v)
    {
-      // Réinitialisation des buckets
-      for(ArrayList<Integer> al : bucketsColorsUse)
-         al.clear();
-
-      // Tri buckets des couleurs selon leur nombre d'occurence
-      // On ajoute toutes les couleurs utilisées + une non utilisée
-      // La clé est donc le nombre d'occurence de la couleur.
-      for(int i = 0; i <= nbDiffrentColors; ++i)
-      {
-         bucketsColorsUse.get(colorsCounter[i]).add(i+1);
-      }
-
       //Parcours décroissant des buckets.
-      boolean colorFound = false;
-      for(int i = bucketsColorsUse.size() - 1; i >= 0 && !colorFound; --i)
+      for(int i = bucketsColorsUse.size() - 1; i >= 0 && solution[v-1] == 0; --i)
       {
          for(int potentialColor : bucketsColorsUse.get(i))
          {
-            if(adjacentColors[potentialColor-1] < v)
-            {
-               solution[v-1] = potentialColor;
-               ++colorsCounter[potentialColor - 1];
-               colorFound = true;
-
-               if(i == 0) ++nbDiffrentColors;
-               break;
-            }
+            if(tryAddColor(potentialColor, v)) break;
          }
       }
-
-      // Réinitialisation des buckets
-      for(ArrayList<Integer> al : bucketsColorsUse)
-         al.clear();
    }
 }

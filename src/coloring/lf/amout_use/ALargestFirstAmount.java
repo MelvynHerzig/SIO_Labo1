@@ -1,7 +1,7 @@
 /*
  -----------------------------------------------------------------------------------
  Cours       : Simultation et optimisation (SIO) Labo 1
- Fichier     : coloring.lf.ALargestFirstAmount.java
+ Fichier     : coloring.lf.amount_use.LargestFirstAmount.java
  Auteur(s)   : Herzig Melvyn
  Date        : 13.03.2021
  -----------------------------------------------------------------------------------
@@ -16,8 +16,8 @@ import graph.Graph;
 import java.util.ArrayList;
 
 /**
- * Classe Abstraite qui défini les stuctures supplémentaires pour
- * variantes de l'algorithmes LargestFirst Least et Most
+ * Classe Abstraite qui défini les stuctures supplémentaires et méthodes
+ * communes pour les variantes de l'algorithmes LargestFirst Least et Most
  * @author Herzig Melvyn
  * @date 14/03/2021
  */
@@ -43,10 +43,29 @@ public abstract class ALargestFirstAmount extends ALargestFirst
    }
 
    /**
+    * Initialise les structures supplémentaires et appel la résolution
+    * de la classe parente.
+    * @param g Graphe simple à colorer.
+    * @return Retourne un GrapheColoring contenant la solution trouvée.
+    */
+   public GraphColoring color(Graph g)
+   {
+      init(g);
+
+      if(g.getNVertices() != 0)
+      {
+         ++colorsCounter[0];
+         adjustBucketsColors(1);
+      }
+
+      return super.color(g);
+   }
+
+   /**
     * Initialise les structures pour la méthode color.
     * @param g Graphe utilisé.
     */
-   private void init(final Graph g)
+   private void init(Graph g)
    {
       colorsCounter = new int[g.getMaxDegree()+1];
 
@@ -56,18 +75,55 @@ public abstract class ALargestFirstAmount extends ALargestFirst
       {
          bucketsColorsUse.add(new ArrayList<>());
       }
+
+      // Placement des couleurs (à 0 pour le moment)
+      for(int color = 1; color <= colorsCounter.length; ++color)
+      {
+         bucketsColorsUse.get(0).add(color);
+      }
+   }
+
+   protected void adjustBucketsColors(int color)
+   {
+      // On retire la couleur de son ancien bucket
+      bucketsColorsUse.get(colorsCounter[color-1] - 1).remove(Integer.valueOf(color));
+
+      // On l'ajoute dans le bon bucket
+      // On cherche la première plus grande couleur
+      int i;
+      for(i = 0; i < bucketsColorsUse.get(colorsCounter[color-1]).size(); ++i)
+      {
+         if(bucketsColorsUse.get(colorsCounter[color-1]).get(i) > color)
+         {
+            break;
+         }
+      }
+
+      // On ajoute dans le bucket à la bonne position.
+      bucketsColorsUse.get(colorsCounter[color-1]).add(i, color);
    }
 
    /**
-    * Initialise les structures supplémentaires et appel la résolution
-    * de la classe parente.
-    * @param graph Graphe simple à colorer.
-    * @return Retourne un GrapheColoring contenant la solution trouvée.
+    * Essaie d'ajouter la couleur color au sommet vertex
+    * @param color Couleur à ajouter.
+    * @param vertex Sommet cible.
+    * @return vrai en cas de succès sinon false.
     */
-   public GraphColoring color(Graph graph)
+   protected boolean tryAddColor(int color, int vertex)
    {
-      init(graph);
+      if(adjacentColors[color-1] != vertex)
+      {
+         solution[vertex-1] = color;
 
-      return super.color(graph);
+         if(colorsCounter[color - 1] == 0) ++nbDiffrentColors;
+
+         ++colorsCounter[color - 1];
+
+         // Mise à jour
+         adjustBucketsColors(color);
+
+         return true;
+      }
+      return false;
    }
 }

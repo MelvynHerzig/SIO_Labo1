@@ -1,7 +1,7 @@
 /*
  -----------------------------------------------------------------------------------
  Cours       : Simultation et optimisation (SIO) Labo 1
- Fichier     : LF.LargestFirstNewest
+ Fichier     : coloring.lf.last_use.LargestFirstNewest.java
  Auteur(s)   : Herzig Melvyn
  Date        : 11.03.2021
  -----------------------------------------------------------------------------------
@@ -9,15 +9,13 @@
 
 package coloring.lf.last_use;
 
-import coloring.lf.ALargestFirst;
-
 /**
  * Implémente la variante "newest" de LargestFirst de Welsh et Powell.
  * Elle définit le parcours des couleurs possibles dans l'ordre décroissant.
  * @author Herzig Melvyn
  * @date 13/03/2021
  */
-public class LargestFirstNewest extends ALargestFirst
+public class LargestFirstNewest extends ALargestFirstTime
 {
    /**
     * Recherche et initialise la prochaine couleur pour v.
@@ -26,20 +24,13 @@ public class LargestFirstNewest extends ALargestFirst
    @Override
    protected void setPossibleColor(int v)
    {
-      for(int i = nbDiffrentColors -1; i >= 0; --i)
+      for(int offset = 1; offset <= nbDiffrentColors + 1; ++offset)
       {
-         //Si une couleur non adjacent est trouvée
-         if(adjacentColors[i] < v)
-         {
-            solution[v-1] = i + 1;
-            // Mise à jour nombre de couleurs
-            if( solution[v-1] > nbDiffrentColors) nbDiffrentColors = solution[v-1];
-            break;
-         }
-      }
+         // On parcourt les couleurs de la dernière à la première puis la (dernière + 1)
+         int color = (nbDiffrentColors + 1) - (offset % (nbDiffrentColors + 1));
 
-      // Si aucune couleur n'a été trouvée, ajout d'une nouvelle
-      if(solution[v-1] == 0)
-         solution[v-1] = ++nbDiffrentColors;
+         if(tryAddColor(color, v))
+            break;
+      }
    }
 }
