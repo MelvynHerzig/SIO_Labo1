@@ -30,7 +30,7 @@ public class LargestFirstLeast extends ALargestFirstAmount
       {
          for(int potentialColor : bucketsColorsUse.get((i + 1) % bucketsColorsUse.size()))
          {
-            if(tryAddColor(potentialColor, v)) break;
+            if(tryAddColor(potentialColor, (i + 1) % bucketsColorsUse.size(), v)) break;
          }
       }
    }

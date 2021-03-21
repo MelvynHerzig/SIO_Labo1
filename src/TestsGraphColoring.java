@@ -9,7 +9,6 @@
 
 // Résolution
 import coloring.GraphColoring;
-import coloring.GraphColoringWriter;
 import coloring.lf.amout_use.LargestFirstLeast;
 import coloring.lf.amout_use.LargestFirstMost;
 import coloring.lf.last_use.LargestFirstNewest;
@@ -23,12 +22,15 @@ import java.io.IOException;
 
 /**
  * Classe utilisée pour tester la coloration des graphes.
+ * @author Herzig Melvyn
+ * @date 20/03/2021
  */
 public class TestsGraphColoring
 {
    /**
-    * Lis le graphe dans le fichier donnée et affiche la coloration
+    * Lis le graphe dans le fichier donné et affiche la coloration
     * obtenue à partir d'une des variantes de LF.
+    * Penser a décommenter une des variantes.
     * @param file Fichier du graphe.
     */
    public static void outputColoringResult(String file)
@@ -54,9 +56,9 @@ public class TestsGraphColoring
 //         GraphColoringWriter.printSolution(lfl.color(g), System.out);
 
          // Most version
-         System.out.printf("\nMost\n---------------------------------------------------\n");
-         LargestFirstMost   lfm = new LargestFirstMost();
-         GraphColoringWriter.printSolution(lfm.color(g), System.out);
+//         System.out.printf("\nMost\n---------------------------------------------------\n");
+//         LargestFirstMost   lfm = new LargestFirstMost();
+//         GraphColoringWriter.printSolution(lfm.color(g), System.out);
       }
       catch (IOException e)
       {
@@ -139,6 +141,14 @@ public class TestsGraphColoring
       }
    }
 
+   /**
+    * Pour lancer les tests décommenter une des deux lignes
+    * entre dataBenchmarks(args[0]) et outputColoringResult("EX_SERIE1_4_c.txt");
+    * Le premier effectue un benchmark de tous les fichiers dans data sur les 4 algorithmes.
+    * Le second, pour un fichier donner effectue une des variantes et affiche la coloration
+    * dans la console. Penser à décommenter une variantes dans outputColoringResult
+    * @param args Chemin du dossier contenant les données à analyser.
+    */
    public static void main(String[] args)
    {
       if(args.length != 1)
@@ -149,9 +159,7 @@ public class TestsGraphColoring
       }
 
       dataBenchmark(args[0]);
-
-      //outputColoringResult("EX_SERIE1_4_a.txt");
-
+      //outputColoringResult("EX_SERIE1_4_c.txt");
 
       return;
    }

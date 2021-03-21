@@ -29,17 +29,11 @@ public abstract class ALargestFirstAmount extends ALargestFirst
    protected ArrayList<ArrayList<Integer>> bucketsColorsUse;
 
    /**
-    * Compte pour chaque couleur son nombre d'occurences
-    */
-   protected int[] colorsCounter;
-
-   /**
     * Constructeur.
     */
    protected ALargestFirstAmount()
    {
       bucketsColorsUse = null;
-      colorsCounter = null;
    }
 
    /**
@@ -54,8 +48,7 @@ public abstract class ALargestFirstAmount extends ALargestFirst
 
       if(g.getNVertices() != 0)
       {
-         ++colorsCounter[0];
-         adjustBucketsColors(1);
+         adjustBucketsColors(1, 1);
       }
 
       return super.color(g);
@@ -67,8 +60,6 @@ public abstract class ALargestFirstAmount extends ALargestFirst
     */
    private void init(Graph g)
    {
-      colorsCounter = new int[g.getMaxDegree()+1];
-
       //Il y a entre 0 et N utilisations possibles pour les couleurs.
       bucketsColorsUse = new ArrayList<>(g.getNVertices());
       for(int i  = 0; i < g.getNVertices(); ++i)
@@ -77,50 +68,50 @@ public abstract class ALargestFirstAmount extends ALargestFirst
       }
 
       // Placement des couleurs (à 0 pour le moment)
-      for(int color = 1; color <= colorsCounter.length; ++color)
+      for(int color = 1; color <= g.getMaxDegree()+1; ++color)
       {
          bucketsColorsUse.get(0).add(color);
       }
    }
 
-   protected void adjustBucketsColors(int color)
+   protected void adjustBucketsColors(int color, int newUsageCount)
    {
       // On retire la couleur de son ancien bucket
-      bucketsColorsUse.get(colorsCounter[color-1] - 1).remove(Integer.valueOf(color));
+      bucketsColorsUse.get(newUsageCount-1).remove(Integer.valueOf(color));
 
       // On l'ajoute dans le bon bucket
       // On cherche la première plus grande couleur
       int i;
-      for(i = 0; i < bucketsColorsUse.get(colorsCounter[color-1]).size(); ++i)
+      for(i = 0; i < bucketsColorsUse.get(newUsageCount).size(); ++i)
       {
-         if(bucketsColorsUse.get(colorsCounter[color-1]).get(i) > color)
+         if(bucketsColorsUse.get(newUsageCount).get(i) > color)
          {
             break;
          }
       }
 
       // On ajoute dans le bucket à la bonne position.
-      bucketsColorsUse.get(colorsCounter[color-1]).add(i, color);
+      bucketsColorsUse.get(newUsageCount).add(i, color);
    }
 
    /**
     * Essaie d'ajouter la couleur color au sommet vertex
     * @param color Couleur à ajouter.
+    * @param colorUseCount Nombre d'utilisations actuelles de la couleur.
     * @param vertex Sommet cible.
     * @return vrai en cas de succès sinon false.
     */
-   protected boolean tryAddColor(int color, int vertex)
+   protected boolean tryAddColor(int color, int colorUseCount,int vertex)
    {
       if(adjacentColors[color-1] != vertex)
       {
          solution[vertex-1] = color;
 
-         if(colorsCounter[color - 1] == 0) ++nbDiffrentColors;
-
-         ++colorsCounter[color - 1];
+         if( color > nbDiffrentColors)
+            ++nbDiffrentColors;
 
          // Mise à jour
-         adjustBucketsColors(color);
+         adjustBucketsColors(color, colorUseCount+1);
 
          return true;
       }

@@ -13,6 +13,7 @@ import coloring.GraphColoring;
 import coloring.IGraphColorer;
 import graph.Graph;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Classe Abstraite qui défini les méthodes communes aux différentes
