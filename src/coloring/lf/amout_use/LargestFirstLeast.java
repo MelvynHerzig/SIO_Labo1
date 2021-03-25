@@ -18,20 +18,15 @@ package coloring.lf.amout_use;
  */
 public class LargestFirstLeast extends ALargestFirstAmount
 {
+
    /**
-    * Recherche et initialise la prochaine couleur pour v.
-    * @param v Sommet à chercher la prochaine couleur.
+    * Confirme si une couleur est un meilleur choix.
+    * C'est à dire, est-elle moins utilisée que la couleur précédente trouvée.
+    * @param color couleur à verifier.
+    * @return Vrai si la couleur est moins utilisée que potentialColor.
     */
-   @Override
-   protected void setPossibleColor(int v)
+   boolean isColorBetterThanPotential(int color)
    {
-      //Parcours croissant des buckets depuis 1
-      for(int i = 0; i < bucketsColorsUse.size() && solution[v-1] == 0; ++i)
-      {
-         for(int potentialColor : bucketsColorsUse.get((i + 1) % bucketsColorsUse.size()))
-         {
-            if(tryAddColor(potentialColor, (i + 1) % bucketsColorsUse.size(), v)) break;
-         }
-      }
+      return amoutColorsUsed[potentialColor - 1] > amoutColorsUsed[color - 1];
    }
 }

@@ -10,6 +10,7 @@
 // Résolution
 import coloring.GraphColoring;
 import coloring.GraphColoringWriter;
+import coloring.IGraphColorer;
 import coloring.lf.amout_use.LargestFirstLeast;
 import coloring.lf.amout_use.LargestFirstMost;
 import coloring.lf.last_use.LargestFirstNewest;
@@ -117,6 +118,22 @@ public class TestsGraphColoring
       }
    }
 
+   public static void test5Times(String testName, IGraphColorer colorer, Graph graph)
+   {
+      final int NB_ITERATIONS = 5;
+      long totalTime = 0;
+
+      GraphColoring gc = null;
+      for(int i = 0; i < NB_ITERATIONS; ++i)
+      {
+         long startTime = System.nanoTime();
+         gc = colorer.color(graph);
+         long endTime = System.nanoTime();
+         totalTime += ((endTime - startTime)/1000);
+      }
+      System.out.printf(testName + ": Time: %d || Colors: %d \n", (totalTime / NB_ITERATIONS), gc.getNumberOfColors());
+   }
+
    /**
     * Benchmark les 4 variantes de l'algorithme Largest First de Welsh et Powell.
     * Donne le temps de chaque exécution et le nombre de couleurs trouvée
@@ -140,10 +157,10 @@ public class TestsGraphColoring
          {
             if (listOfFiles[i].isFile())
             {
-               LargestFirstNewest lfn = new LargestFirstNewest();
                LargestFirstOldest lfo = new LargestFirstOldest();
-               LargestFirstMost   lfm = new LargestFirstMost();
+               LargestFirstNewest lfn = new LargestFirstNewest();
                LargestFirstLeast  lfl = new LargestFirstLeast();
+               LargestFirstMost   lfm = new LargestFirstMost();
 
                System.out.println("Fichier: " + listOfFiles[i].getName());
                Graph g = GraphReader.fromFile(folderPath.concat(listOfFiles[i].getName()));
@@ -156,32 +173,16 @@ public class TestsGraphColoring
                System.out.printf("---------------------------------------------------\n");
 
                // Oldest version
-               startTime = System.nanoTime();
-               gc = lfo.color(g);
-               endTime = System.nanoTime();
-               duration = (endTime - startTime) / 1000;
-               System.out.printf("Oldest: Time: %d || Colors: %d \n", duration, gc.getNumberOfColors());
+               test5Times("Oldest", lfo, g);
 
                // Newest version
-               startTime = System.nanoTime();
-               gc = lfn.color(g);
-               endTime = System.nanoTime();
-               duration = (endTime - startTime) / 1000;
-               System.out.printf("Newest: Time: %d || Colors: %d \n", duration, gc.getNumberOfColors());
+               test5Times("Newest", lfn, g);
 
                // Least version
-               startTime = System.nanoTime();
-               gc = lfl.color(g);
-               endTime = System.nanoTime();
-               duration = (endTime - startTime) / 1000;
-               System.out.printf("Least : Time: %d || Colors: %d \n", duration, gc.getNumberOfColors());
+               test5Times("Least ", lfl, g);
 
                // Most version
-               startTime = System.nanoTime();
-               gc = lfm.color(g);
-               endTime = System.nanoTime();
-               duration = (endTime - startTime) / 1000;
-               System.out.printf("Most  : Time: %d || Colors: %d \n", duration, gc.getNumberOfColors());
+               test5Times("most  ", lfm, g);
 
                System.out.printf("---------------------------------------------------\n\n");
             }

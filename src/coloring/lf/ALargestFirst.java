@@ -121,7 +121,6 @@ public abstract class ALargestFirst implements IGraphColorer
          int degree = g.getAdjacencyList(v).size();
          bucketsVerticesDegree.get(degree).add(v);
       }
-
       return bucketsVerticesDegree;
    }
 

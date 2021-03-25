@@ -13,8 +13,6 @@ import coloring.GraphColoring;
 import coloring.lf.ALargestFirst;
 import graph.Graph;
 
-import java.util.ArrayList;
-
 /**
  * Classe Abstraite qui défini les stuctures supplémentaires et méthodes
  * communes pour les variantes de l'algorithmes LargestFirst Least et Most
@@ -24,22 +22,32 @@ import java.util.ArrayList;
 public abstract class ALargestFirstAmount extends ALargestFirst
 {
    /**
-    * Buckets pour trier les couleurs selon leur nombre d'utilisation.
+    * Stocke pour chaque couleur son nombre d'utilisations.
     */
-   protected ArrayList<ArrayList<Integer>> bucketsColorsUse;
+   protected int[] amoutColorsUsed;
 
    /**
-    * Mémorise le nombre d'utilisation de la couleurs la plus utilisée.
-    * Permet de ne pas itérer sur les buckets finaux vides.
+    * A chaque assignaton d'une couleur pour un noeud.
+    * Stocke la meilleure couleur potentiellement assignable.
     */
-   protected int mostUsedAmount;
+   protected int  potentialColor;
 
    /**
     * Constructeur.
     */
    protected ALargestFirstAmount()
    {
-      bucketsColorsUse = null;
+      amoutColorsUsed = null;
+   }
+
+   /**
+    * Initialise les structures pour la méthode color.
+    * @param g Graphe utilisé.
+    */
+   private void init(Graph g)
+   {
+      potentialColor = 0;
+      amoutColorsUsed = new int[g.getMaxDegree()+1];
    }
 
    /**
@@ -54,78 +62,64 @@ public abstract class ALargestFirstAmount extends ALargestFirst
 
       if(g.getNVertices() != 0)
       {
-         adjustBucketsColors(1, 1);
+         ++amoutColorsUsed[0];
       }
 
       return super.color(g);
    }
 
    /**
-    * Initialise les structures pour la méthode color.
-    * @param g Graphe utilisé.
+    * Essaie d'améliorer potentialColor par color pour le sommet vertex
+    * @param color Couleur possiblement meilleur que potentialColor.
+    * @param vertex Sommet courrant.
     */
-   private void init(Graph g)
+   protected void tryImprovePotentialColor(int color,int vertex)
    {
-      mostUsedAmount = 0;
-
-      //Il y a entre 0 et N utilisations possibles pour les couleurs.
-      bucketsColorsUse = new ArrayList<>(g.getNVertices()+1);
-      for(int i  = 0; i < g.getNVertices(); ++i)
+      // Si la couleur est adjacente pas besoin d'améliorer potentialColor.
+      if(adjacentColors[color-1] == vertex)
       {
-         bucketsColorsUse.add(new ArrayList<>());
+         return;
       }
 
-      // Placement des couleurs (à 0 pour le moment)
-      for(int color = 1; color <= g.getMaxDegree()+1; ++color)
+      // aucune couleur n'est encore potentielle
+      if (potentialColor == 0 || isColorBetterThanPotential(color))
       {
-         bucketsColorsUse.get(0).add(color);
+         potentialColor = color;
       }
-   }
-
-   protected void adjustBucketsColors(int color, int newUsageCount)
-   {
-      // On retire la couleur de son ancien bucket
-      bucketsColorsUse.get(newUsageCount-1).remove(Integer.valueOf(color));
-
-      // On l'ajoute dans le bon bucket
-      // On cherche la première plus grande couleur
-      int i;
-      for(i = 0; i < bucketsColorsUse.get(newUsageCount).size(); ++i)
-      {
-         if(bucketsColorsUse.get(newUsageCount).get(i) > color)
-         {
-            break;
-         }
-      }
-
-      // On ajoute dans le bucket à la bonne position.
-      bucketsColorsUse.get(newUsageCount).add(i, color);
-
-      // Mise à jour du montant de la plus grosse utilisation.
-      mostUsedAmount = (mostUsedAmount < newUsageCount) ? newUsageCount : mostUsedAmount;
    }
 
    /**
-    * Essaie d'ajouter la couleur color au sommet vertex
-    * @param color Couleur à ajouter.
-    * @param colorUseCount Nombre d'utilisations actuelles de la couleur.
-    * @param vertex Sommet cible.
-    * @return vrai en cas de succès sinon false.
+    * Recherche et initialise la prochaine couleur pour v.
+    * @param v Sommet à chercher la prochaine couleur.
     */
-   protected boolean tryAddColor(int color, int colorUseCount,int vertex)
+   @Override
+   protected void setPossibleColor(int v)
    {
-      if(adjacentColors[color-1] != vertex)
+      potentialColor = 0;
+
+      // De la première couleur jusqu'a la dernière couleur.
+      for(int color = 1; color <= nbDiffrentColors; ++color)
       {
-         solution[vertex-1] = color;
-
-         if( color > nbDiffrentColors)
-            ++nbDiffrentColors;
-
-         // Mise à jour
-         adjustBucketsColors(color, colorUseCount+1);
-
-         return true;
+         tryImprovePotentialColor(color, v);
       }
-      return false;
+
+      // Si aucune couleur n'est trouvle comme potentielle.
+      // On ajoute une nouvelle couleurs
+      if(potentialColor == 0)
+      {
+         potentialColor = nbDiffrentColors +1;
+         ++nbDiffrentColors;
+      }
+
+      solution[v-1] = potentialColor;
+      ++amoutColorsUsed[potentialColor-1];
    }
+
+   /**
+    * Confirme si une couleur est un meilleur choix.
+    * C'est à dire, est-elle moins utilisée que la couleur précédente trouvée.
+    * @param color couleur à verifier.
+    * @return Vrai si la couleur est préférable à utiliser que potentialColor.
+    */
+   abstract boolean isColorBetterThanPotential(int color);
 }

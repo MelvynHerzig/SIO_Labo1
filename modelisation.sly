@@ -21,11 +21,11 @@
       <child>54670</child>
       <parent>53937</parent>
     </inheritance>
-    <inheritance id="54793">
+    <inheritance id="55029">
       <child>54671</child>
       <parent>53939</parent>
     </inheritance>
-    <inheritance id="54794">
+    <inheritance id="55030">
       <child>54672</child>
       <parent>53939</parent>
     </inheritance>
@@ -45,27 +45,31 @@
       </method>
       <method isAbstract="true" isStatic="false" name="setPossibleColor" returnType="void" view="DEFAULT" visibility="PRIVATE"/>
     </entity>
-    <entity entityType="CLASS" id="53937" isAbstract="false" name="ALargestFirstTime" visibility="PUBLIC">
+    <entity entityType="CLASS" id="53937" isAbstract="true" name="ALargestFirstTime" visibility="PUBLIC">
       <method isAbstract="false" isStatic="false" name="tryAddColor" returnType="boolean" view="DEFAULT" visibility="PROTECTED">
         <variable const="false" name="color" type="int"/>
         <variable const="false" name="vertex" type="int"/>
       </method>
     </entity>
-    <entity entityType="CLASS" id="53939" isAbstract="false" name="ALargestFirstAmount" visibility="PUBLIC">
-      <attribute const="false" defaultValue="" isStatic="false" name="bucketsColorUse" type="ArrayList&lt;ArrayList&lt;Integer&gt;&gt;" visibility="PROTECTED"/>
-      <method is-constructor="true" isAbstract="false" isStatic="false" name="ALargestFirstAmount" returnType="" view="DEFAULT" visibility="PUBLIC"/>
-      <method isAbstract="false" isStatic="false" name="color" returnType="GraphColoring" view="DEFAULT" visibility="PUBLIC">
-        <variable const="false" name="g" type="Graph"/>
-      </method>
+    <entity entityType="CLASS" id="53939" isAbstract="true" name="ALargestFirstAmount" visibility="PUBLIC">
+      <attribute const="false" defaultValue="" isStatic="false" name="amoutColorsUsed" type="int[]" visibility="PROTECTED"/>
+      <attribute const="false" defaultValue="" isStatic="false" name="potentialColor" type="int" visibility="PRIVATE"/>
+      <method is-constructor="true" isAbstract="true" isStatic="false" name="ALargestFirstAmount" returnType="" view="DEFAULT" visibility="PUBLIC"/>
       <method isAbstract="false" isStatic="false" name="init" returnType="void" view="DEFAULT" visibility="PRIVATE">
         <variable const="false" name="g" type="Graph"/>
       </method>
-      <method isAbstract="false" isStatic="false" name="adjustBucketColors" returnType="void" view="DEFAULT" visibility="PROTECTED">
-        <variable const="false" name="color" type="int"/>
+      <method isAbstract="false" isStatic="false" name="color" returnType="GraphColoring" view="DEFAULT" visibility="PUBLIC">
+        <variable const="false" name="g" type="Graph"/>
       </method>
-      <method isAbstract="false" isStatic="false" name="tryAddColor" returnType="boolean" view="DEFAULT" visibility="PROTECTED">
+      <method isAbstract="false" isStatic="false" name="tryImprovePotentialColor" returnType="boolean" view="DEFAULT" visibility="PROTECTED">
         <variable const="false" name="color" type="int"/>
         <variable const="false" name="vertex" type="int"/>
+      </method>
+      <method isAbstract="false" isStatic="false" name="setPossibleColor" returnType="void" view="DEFAULT" visibility="PROTECTED">
+        <variable const="false" name="v" type="int"/>
+      </method>
+      <method isAbstract="true" isStatic="false" name="isColorBetterThanPotential" returnType="boolean" view="DEFAULT" visibility="PROTECTED">
+        <variable const="false" name="color" type="int"/>
       </method>
     </entity>
     <entity entityType="INTERFACE" id="54261" isAbstract="true" name="IGraphColorer" visibility="PUBLIC">
@@ -84,22 +88,58 @@
       </method>
     </entity>
     <entity entityType="CLASS" id="54671" isAbstract="false" name="LargestFirstLeast" visibility="PUBLIC">
-      <method isAbstract="false" isStatic="false" name="setPossibleColor" returnType="void" view="DEFAULT" visibility="PROTECTED">
-        <variable const="false" name="v" type="int"/>
-      </method>
+      <method isAbstract="false" isStatic="false" name="isColorBetterThanPotential" returnType="boolean" view="DEFAULT" visibility="PROTECTED"/>
     </entity>
     <entity entityType="CLASS" id="54672" isAbstract="false" name="LargestFirstMost" visibility="PUBLIC">
-      <method isAbstract="false" isStatic="false" name="setPossibleColor" returnType="void" view="DEFAULT" visibility="PROTECTED">
-        <variable const="false" name="v" type="int"/>
-      </method>
+      <method isAbstract="false" isStatic="false" name="isColorBetterThanPotential" returnType="boolean" view="DEFAULT" visibility="PROTECTED"/>
     </entity>
   </diagramElements>
   <umlView grid="10" name="Main view" open="true">
+    <relationView color="-12566464" relationId="55030">
+      <line>
+        <point>
+          <x>1121</x>
+          <y>631</y>
+        </point>
+        <point>
+          <x>1121</x>
+          <y>611</y>
+        </point>
+        <point>
+          <x>971</x>
+          <y>611</y>
+        </point>
+        <point>
+          <x>971</x>
+          <y>576</y>
+        </point>
+      </line>
+    </relationView>
+    <relationView color="-12566464" relationId="55029">
+      <line>
+        <point>
+          <x>851</x>
+          <y>631</y>
+        </point>
+        <point>
+          <x>851</x>
+          <y>611</y>
+        </point>
+        <point>
+          <x>971</x>
+          <y>611</y>
+        </point>
+        <point>
+          <x>971</x>
+          <y>576</y>
+        </point>
+      </line>
+    </relationView>
     <relationView color="-12566464" relationId="54792">
       <line>
         <point>
           <x>591</x>
-          <y>611</y>
+          <y>631</y>
         </point>
         <point>
           <x>591</x>
@@ -119,7 +159,7 @@
       <line>
         <point>
           <x>331</x>
-          <y>611</y>
+          <y>631</y>
         </point>
         <point>
           <x>331</x>
@@ -132,6 +172,26 @@
         <point>
           <x>471</x>
           <y>541</y>
+        </point>
+      </line>
+    </relationView>
+    <relationView color="-12566464" relationId="54667">
+      <line>
+        <point>
+          <x>971</x>
+          <y>401</y>
+        </point>
+        <point>
+          <x>971</x>
+          <y>361</y>
+        </point>
+        <point>
+          <x>711</x>
+          <y>361</y>
+        </point>
+        <point>
+          <x>711</x>
+          <y>326</y>
         </point>
       </line>
     </relationView>
@@ -167,86 +227,26 @@
         </point>
       </line>
     </relationView>
-    <relationView color="-12566464" relationId="54667">
-      <line>
-        <point>
-          <x>971</x>
-          <y>401</y>
-        </point>
-        <point>
-          <x>971</x>
-          <y>361</y>
-        </point>
-        <point>
-          <x>711</x>
-          <y>361</y>
-        </point>
-        <point>
-          <x>711</x>
-          <y>326</y>
-        </point>
-      </line>
-    </relationView>
-    <relationView color="-12566464" relationId="54793">
-      <line>
-        <point>
-          <x>841</x>
-          <y>611</y>
-        </point>
-        <point>
-          <x>841</x>
-          <y>591</y>
-        </point>
-        <point>
-          <x>971</x>
-          <y>591</y>
-        </point>
-        <point>
-          <x>971</x>
-          <y>546</y>
-        </point>
-      </line>
-    </relationView>
-    <relationView color="-12566464" relationId="54794">
-      <line>
-        <point>
-          <x>1101</x>
-          <y>611</y>
-        </point>
-        <point>
-          <x>1101</x>
-          <y>591</y>
-        </point>
-        <point>
-          <x>971</x>
-          <y>591</y>
-        </point>
-        <point>
-          <x>971</x>
-          <y>546</y>
-        </point>
-      </line>
-    </relationView>
     <componentView color="-2079" componentID="54672" displayAttributes="true" displayDefault="true" displayMethods="true">
       <geometry>
-        <x>1000</x>
-        <y>610</y>
-        <w>190</w>
+        <x>990</x>
+        <y>630</y>
+        <w>260</w>
         <h>70</h>
       </geometry>
     </componentView>
     <componentView color="-2079" componentID="54671" displayAttributes="true" displayDefault="true" displayMethods="true">
       <geometry>
-        <x>740</x>
-        <y>610</y>
-        <w>190</w>
+        <x>720</x>
+        <y>630</y>
+        <w>250</w>
         <h>70</h>
       </geometry>
     </componentView>
     <componentView color="-2079" componentID="54670" displayAttributes="true" displayDefault="true" displayMethods="true">
       <geometry>
         <x>490</x>
-        <y>610</y>
+        <y>630</y>
         <w>190</w>
         <h>70</h>
       </geometry>
@@ -254,7 +254,7 @@
     <componentView color="-2079" componentID="54668" displayAttributes="true" displayDefault="true" displayMethods="true">
       <geometry>
         <x>230</x>
-        <y>610</y>
+        <y>630</y>
         <w>190</w>
         <h>70</h>
       </geometry>
@@ -265,6 +265,14 @@
         <y>20</y>
         <w>270</w>
         <h>84</h>
+      </geometry>
+    </componentView>
+    <componentView color="-2079" componentID="53939" displayAttributes="true" displayDefault="true" displayMethods="true">
+      <geometry>
+        <x>790</x>
+        <y>400</y>
+        <w>350</w>
+        <h>175</h>
       </geometry>
     </componentView>
     <componentView color="-2079" componentID="53937" displayAttributes="true" displayDefault="true" displayMethods="true">
@@ -281,14 +289,6 @@
         <y>150</y>
         <w>350</w>
         <h>175</h>
-      </geometry>
-    </componentView>
-    <componentView color="-2079" componentID="53939" displayAttributes="true" displayDefault="true" displayMethods="true">
-      <geometry>
-        <x>790</x>
-        <y>400</y>
-        <w>350</w>
-        <h>145</h>
       </geometry>
     </componentView>
   </umlView>

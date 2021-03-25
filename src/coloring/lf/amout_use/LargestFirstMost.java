@@ -9,8 +9,6 @@
 
 package coloring.lf.amout_use;
 
-import java.util.ArrayList;
-
 /**
  * Implémente la variante "most" de LargestFirst de Welsh et Powell.
  * Elle définit que les couleurs utilisées sont en priorité les couleurs
@@ -22,19 +20,13 @@ public class LargestFirstMost extends ALargestFirstAmount
 {
 
    /**
-    * Recherche et initialise la prochaine couleur pour v.
-    * @param v Sommet à chercher la prochaine couleur.
+    * Confirme si une couleur est un meilleur choix.
+    * C'est à dire, est-elle plus utilisée que la couleur précédente trouvée.
+    * @param color couleur à verifier.
+    * @return Vrai si la couleur est plus utilisée que potentialColor.
     */
-   @Override
-   protected void setPossibleColor(int v)
+   boolean isColorBetterThanPotential(int color)
    {
-      //Parcours décroissant des buckets.
-      for(int i = mostUsedAmount; i >= 0 && solution[v-1] == 0; --i)
-      {
-         for(int potentialColor : bucketsColorsUse.get(i))
-         {
-            if(tryAddColor(potentialColor, i, v)) break;
-         }
-      }
+      return amoutColorsUsed[potentialColor - 1] < amoutColorsUsed[color - 1];
    }
 }
