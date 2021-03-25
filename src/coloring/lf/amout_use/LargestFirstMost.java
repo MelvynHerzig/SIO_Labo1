@@ -29,7 +29,7 @@ public class LargestFirstMost extends ALargestFirstAmount
    protected void setPossibleColor(int v)
    {
       //Parcours décroissant des buckets.
-      for(int i = bucketsColorsUse.size() - 1; i >= 0 && solution[v-1] == 0; --i)
+      for(int i = mostUsedAmount; i >= 0 && solution[v-1] == 0; --i)
       {
          for(int potentialColor : bucketsColorsUse.get(i))
          {

@@ -29,6 +29,12 @@ public abstract class ALargestFirstAmount extends ALargestFirst
    protected ArrayList<ArrayList<Integer>> bucketsColorsUse;
 
    /**
+    * Mémorise le nombre d'utilisation de la couleurs la plus utilisée.
+    * Permet de ne pas itérer sur les buckets finaux vides.
+    */
+   protected int mostUsedAmount;
+
+   /**
     * Constructeur.
     */
    protected ALargestFirstAmount()
@@ -60,8 +66,10 @@ public abstract class ALargestFirstAmount extends ALargestFirst
     */
    private void init(Graph g)
    {
+      mostUsedAmount = 0;
+
       //Il y a entre 0 et N utilisations possibles pour les couleurs.
-      bucketsColorsUse = new ArrayList<>(g.getNVertices());
+      bucketsColorsUse = new ArrayList<>(g.getNVertices()+1);
       for(int i  = 0; i < g.getNVertices(); ++i)
       {
          bucketsColorsUse.add(new ArrayList<>());
@@ -92,6 +100,9 @@ public abstract class ALargestFirstAmount extends ALargestFirst
 
       // On ajoute dans le bucket à la bonne position.
       bucketsColorsUse.get(newUsageCount).add(i, color);
+
+      // Mise à jour du montant de la plus grosse utilisation.
+      mostUsedAmount = (mostUsedAmount < newUsageCount) ? newUsageCount : mostUsedAmount;
    }
 
    /**
